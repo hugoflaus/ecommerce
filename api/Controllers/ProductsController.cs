@@ -1,6 +1,5 @@
-using System.Collections.Generic;
 using System.Linq;
-using api.Models;
+using api.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -8,25 +7,26 @@ namespace api.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private List<Product> _products = new List<Product>
+        private readonly EcommerceDBContext _ecommerceDBContext;
+        public ProductsController(EcommerceDBContext eccomerceDBContext)
         {
-            new Product(1, "Chinelo", 10),
-            new Product(2, "Tempero", 5),
-            new Product(2, "Bicicleta", 50),
-        };
+            _ecommerceDBContext = eccomerceDBContext;
+        }
 
         // api/products
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_products);
+            var products = _ecommerceDBContext.Produtcs.ToList();
+            
+            return Ok(products);
         }
 
         // api/products/1
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var product = _products.SingleOrDefault(p => p.Id == id);
+            var product = _ecommerceDBContext.Produtcs.SingleOrDefault(p => p.Id == id);
 
             if(product == null)
             {
