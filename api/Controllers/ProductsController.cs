@@ -1,4 +1,5 @@
 using System.Linq;
+using api.Models;
 using api.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,6 +36,18 @@ namespace api.Controllers
            
             return Ok(product);
             
+        }
+        
+        [HttpPost]
+        public IActionResult Post([FromBody] ProductInputModel productInputModel)
+        {
+            var product = new Product(productInputModel.Description, productInputModel.Price);
+
+            _ecommerceDBContext.Produtcs.Add(product);
+            _ecommerceDBContext.SaveChanges();
+
+            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
+
         }
 
     }
